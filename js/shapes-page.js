@@ -93,6 +93,21 @@
   // Chrome n'autorise vibrate() qu'après un geste sur la page : le premier tap arme les vibrations.
   let armed = false;
   addEventListener("pointerdown", () => { if (!armed && haptics.on) { armed = true; navigator.vibrate?.(30); } }, { once: true });
+  // ?debug : état des vibrations en bas à gauche (support, geste reçu, dernier retour de vibrate())
+  if (params.has("debug")) {
+    const dbg = document.createElement("pre");
+    dbg.className = "debug";
+    dbg.style.bottom = "auto"; dbg.style.top = "auto"; dbg.style.right = "8px"; dbg.style.left = "auto";
+    document.body.append(dbg);
+    const rawVibrate = navigator.vibrate?.bind(navigator);
+    let calls = 0, lastRet = "—";
+    if (rawVibrate) navigator.vibrate = (p) => { calls++; lastRet = String(rawVibrate(p)); return lastRet === "true"; };
+    setInterval(() => {
+      dbg.textContent = `vibrate : ${canVibrate ? "supporté" : "NON supporté"}\n` +
+        `geste reçu : ${navigator.userActivation ? (navigator.userActivation.hasBeenActive ? "oui" : "NON (touche la page)") : "?"}\n` +
+        `activé : ${haptics.on ? "oui" : "non"} · appels : ${calls} · retour : ${lastRet}`;
+    }, 200);
+  }
   const hapBtn = document.createElement("button");
   hapBtn.type = "button";
   hapBtn.textContent = canVibrate ? "Vibrations : " + (haptics.on ? "oui" : "non") : "Vibrations indisponibles (Android seulement)";
