@@ -7,8 +7,7 @@
 .pt-b, .pt-shadow, .pt-a, .pt-flap, .pt-a-shade { position: absolute; left: 0; top: 0; width: 375px; height: 812px; }
 .pt-b .layer-bg { position: absolute; inset: 0; }
 
-.pt-shadow { filter: drop-shadow(0 0 7px rgba(21, 34, 51, .28)); pointer-events: none; }
-.pt-shadow--flap { filter: drop-shadow(-3px -3px 7px rgba(21, 34, 51, .30)); }
+.pt-shadow { pointer-events: none; }
 .pt-a { background: var(--main); } /* « Main » orange du design */
 .pt-flap { background: #b84a14; transform-origin: 0 0; } /* dos de la page : orange foncé du coin Figma */
 
