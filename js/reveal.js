@@ -1,15 +1,5 @@
-// Labo « reveal » : médaille avec plusieurs versions du foil holographique.
-// Le foil et la médaille (3D) réagissent au gyroscope (mobile) ou à la souris (desktop). ?v=<id> ouvre une version, ?debug affiche l'inclinaison.
-// Touches : ← → changent de version.
-
-const VERSIONS = [
-  { id: "figma",  nom: "V1 · Fidèle Figma", note: "Réglages du calque Foil, reflet qui suit l'inclinaison",
-    preset: {}, rot: 12 },
-  { id: "irise",  nom: "V2 · Irisé",        note: "Reflets arc-en-ciel qui apparaissent en inclinant",
-    preset: { tilt: { rainbow: 0.7, hue: 160, shift: 0.5 } } },
-  { id: "eclat",  nom: "V3 · Éclat",        note: "Reflet plus net et plus ample",
-    preset: { intensity: 1.9, soft: 0.3, tilt: { hl: 36, shift: 0.45 } } },
-];
+// Labo « reveal » : médaille avec foil holographique.
+// Le foil et la médaille (3D) réagissent au gyroscope (mobile) ou à la souris (desktop). ?debug affiche l'inclinaison.
 
 (() => {
   const params = new URLSearchParams(location.search);
@@ -26,7 +16,7 @@ const VERSIONS = [
   const canvas = document.getElementById("foil");
   // Centre du sceau dans le repère du canvas (= foil Figma décalé de (−48.52, −30))
   const medal = document.getElementById("medal");
-  let rot = 12; // ° d'inclinaison 3D de la médaille à ±1 (selon la version)
+  const rot = 12; // ° d'inclinaison 3D de la médaille à ±1
   const holo = window.Holo.create({
     canvas,
     sealCenter: [48.52 + 163.5, 30 + 163.5],
@@ -53,32 +43,15 @@ const VERSIONS = [
     }, 100);
   }
 
-  function select(id) {
-    const v = VERSIONS.find((x) => x.id === id) || VERSIONS[0];
-    holo?.setPreset(v.preset);
-    rot = v.rot;
-    bar.querySelectorAll("button[data-v]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === v.id)));
-    history.replaceState(null, "", `?v=${v.id}${params.has("debug") ? "&debug" : ""}`);
-  }
-
   const sensorBtn = holo?.needsPermission
     ? `<button type="button" class="replay" data-act="sensors">Activer le gyroscope</button>` : "";
   bar.innerHTML = `<a class="back" href="index.html">← Labo</a><h1>Reveal</h1>
-    ${VERSIONS.map((v) => `<button type="button" data-v="${v.id}">${v.nom}<small>${v.note}</small></button>`).join("")}
     ${sensorBtn}
     <button type="button" data-act="calibrate">Recalibrer (gyroscope)</button>`;
   bar.addEventListener("click", async (e) => {
     const b = e.target.closest("button");
     if (!b) return;
-    if (b.dataset.v) select(b.dataset.v);
     if (b.dataset.act === "calibrate") holo?.recalibrate();
     if (b.dataset.act === "sensors" && (await holo.requestSensors())) b.remove();
   });
-  addEventListener("keydown", (e) => {
-    const i = VERSIONS.findIndex((v) => bar.querySelector(`[data-v="${v.id}"]`).getAttribute("aria-pressed") === "true");
-    if (e.key === "ArrowRight") select(VERSIONS[(i + 1) % VERSIONS.length].id);
-    if (e.key === "ArrowLeft") select(VERSIONS[(i + VERSIONS.length - 1) % VERSIONS.length].id);
-  });
-
-  select(params.get("v"));
 })();
