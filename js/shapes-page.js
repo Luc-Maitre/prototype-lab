@@ -69,7 +69,7 @@
   const ROLL_MIN = 70;    // px/s : en dessous, les formes sont « posées », pas de vibration
   const ROLL_GAP = [150, 55]; // ms entre deux pulsations : vitesse ROLL_MIN → ROLL_FAST
   const ROLL_FAST = 600;  // px/s
-  const PULSE = 6;        // ms : très léger
+  const PULSE = 12;       // ms : léger (en dessous de ~10 ms, beaucoup de moteurs ne démarrent pas)
   const IMPACT = 120;     // px/s : vitesse minimale avant inversion pour compter comme un choc
   function haptic(now) {
     const v = window.ShapesPhysics.velocities();
@@ -81,7 +81,7 @@
     });
     haptics.prev = v;
     if (!haptics.on || document.hidden) return;
-    if (hit && now - haptics.last > 70) { navigator.vibrate(hit > 350 ? 14 : 9); haptics.last = now; return; }
+    if (hit && now - haptics.last > 70) { navigator.vibrate(hit > 350 ? 24 : 16); haptics.last = now; return; }
     if (speed < ROLL_MIN) return;
     const k = Math.min(1, (speed - ROLL_MIN) / (ROLL_FAST - ROLL_MIN));
     if (now - haptics.last > ROLL_GAP[0] + (ROLL_GAP[1] - ROLL_GAP[0]) * k) { navigator.vibrate(PULSE); haptics.last = now; }
@@ -90,6 +90,9 @@
     const loop = (now) => { haptic(now); requestAnimationFrame(loop); };
     requestAnimationFrame(loop);
   }
+  // Chrome n'autorise vibrate() qu'après un geste sur la page : le premier tap arme les vibrations.
+  let armed = false;
+  addEventListener("pointerdown", () => { if (!armed && haptics.on) { armed = true; navigator.vibrate?.(30); } }, { once: true });
   const hapBtn = document.createElement("button");
   hapBtn.type = "button";
   hapBtn.textContent = canVibrate ? "Vibrations : " + (haptics.on ? "oui" : "non") : "Vibrations indisponibles (Android seulement)";
@@ -98,7 +101,7 @@
     haptics.on = !haptics.on;
     localStorage.setItem("shapes-haptics", haptics.on ? "on" : "off");
     hapBtn.textContent = "Vibrations : " + (haptics.on ? "oui" : "non");
-    if (haptics.on) navigator.vibrate(20);
+    if (haptics.on) navigator.vibrate(40); // test : si rien ne vibre ici, c'est un réglage du téléphone
   });
   bar.querySelector(".hint").before(hapBtn);
 
