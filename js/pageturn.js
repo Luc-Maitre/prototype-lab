@@ -122,7 +122,7 @@
   };
   const ease = bez(0.4, 0, 0.2, 1); // départ progressif, arrivée douce
 
-  // from → to avec le décalage x/y propre à la variante ; reverse = trajet inverse de la même courbe
+  // from → to avec le décalage x/y propre à la variante ; reverse = même trajet parcouru de `to` vers `from`
   function run(from, to, { reverse = false, duration = state.duree, then } = {}) {
     cancelAnimationFrame(state.anim);
     const v = VARIANTS[state.variant];
@@ -132,10 +132,10 @@
       const t = Math.min(1, (now - t0) / dur);
       const u = ease(t);
       state.C = reverse
-        ? [to[0] + (from[0] - to[0]) * v.fx(1 - u), to[1] + (from[1] - to[1]) * v.fy(1 - u)]
+        ? [from[0] + (to[0] - from[0]) * v.fx(1 - u), from[1] + (to[1] - from[1]) * v.fy(1 - u)]
         : [from[0] + (to[0] - from[0]) * v.fx(u), from[1] + (to[1] - from[1]) * v.fy(u)];
       if (t < 1) state.anim = requestAnimationFrame(tick);
-      else { state.anim = 0; state.C = [...to]; then?.(); }
+      else { state.anim = 0; state.C = [...(reverse ? from : to)]; then?.(); }
     };
     state.anim = requestAnimationFrame(tick);
   }
