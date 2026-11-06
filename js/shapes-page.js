@@ -1,4 +1,4 @@
-// Labo « Formes physiques » : les 4 variants du fond wrap-up (horloges, étoiles, bulles, cœurs).
+// Labo « Formes physiques » : les 4 variants du fond (horloges, étoiles, bulles, cœurs).
 // Les formes réagissent à l'accéléromètre (mobile) ou à la souris (desktop) : voir js/physics.js.
 // Touches ← → : changer de variant. URL : ?v=clocks|stars|bubbles|hearts, ?debug, ?bare, ?motion (ignore « réduire les animations »).
 

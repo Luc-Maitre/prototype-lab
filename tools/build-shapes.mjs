@@ -1,5 +1,5 @@
 // Construit js/shapes.js depuis les SVG exportés de Figma (assets/backgrounds/*.svg), composant _Background
-// (6382:14782) : variants Clocks, Stars, Message bubbles, Hearts. Chaque variant = 3 formes indépendantes
+// : variants Clocks, Stars, Message bubbles, Hearts. Chaque variant = 3 formes indépendantes
 // (bleu, orange, pêche) pour la physique. Repère : écran 375 × 812, formes ancrées en bas.
 // Géométrie reprise du code Figma (positions « bottom » converties en y depuis le haut).
 //

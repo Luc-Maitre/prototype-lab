@@ -1,4 +1,4 @@
-/* Formes de fond physiques (Figma Wrap-up, composant _Background). Fond de page = pile du template :
+/* Formes de fond physiques (composant _Background). Fond de page = pile du template :
    blanc, #FFE9DE, blanc 40 %. Les formes viennent par-dessus, puis le voile de lisibilité. */
 
 .shapes .app { background: linear-gradient(rgba(255, 255, 255, .4), rgba(255, 255, 255, .4)), #ffe9de; }

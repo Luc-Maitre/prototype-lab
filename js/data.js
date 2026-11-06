@@ -1,4 +1,4 @@
-// Labo « Data simple » : le nombre défile comme un compteur kilométrique (même animation que le wrap-up).
+// Labo « Data simple » : le nombre défile comme un compteur kilométrique.
 // Chaque chiffre est une roue ; les unités tournent en continu, chaque roue avance quand celle de droite passe de 9 à 0.
 // Les textes entre [] du composant Figma sont modifiables dans la barre. URL : ?haut= ?valeur= ?bas= ?duree= ?courbe=
 
@@ -26,7 +26,7 @@
   const state = {
     haut: params.get("haut") ?? "Vous avez passé",
     valeur: (params.get("valeur") ?? "1234").replace(/\D/g, "") || "0",
-    bas: params.get("bas") ?? "heures sur leboncoin",
+    bas: params.get("bas") ?? "heures sur l'appli",
     duree: Number(params.get("duree")) || 1500,
     courbe: EASE[params.get("courbe")] ? params.get("courbe") : "decelerate",
   };

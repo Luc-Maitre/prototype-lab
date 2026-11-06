@@ -6,11 +6,11 @@ Le shader est le « Holographic foil » de Figma (WGSL), porté à l'identique e
 
 ## Data simple
 
-`data.html` : composant « Data simple » (Figma Wrap-up, node 6382:17215) avec le nombre qui défile comme un compteur à roues (animation reprise du wrap-up, tag `v1`). Les textes entre `[]` (label haut, nombre, label bas) se modifient dans la barre, ainsi que la courbe et la durée. Paramètres : `?haut= ?valeur= ?bas= ?duree= ?courbe=decelerate|standard|accelerate|linear`, `?t=0..1` fige l'animation à cet instant. Police : Nunito (Regular / Black).
+`data.html` : composant « Data simple » avec le nombre qui défile comme un compteur à roues. Les textes entre `[]` (label haut, nombre, label bas) se modifient dans la barre, ainsi que la courbe et la durée. Paramètres : `?haut= ?valeur= ?bas= ?duree= ?courbe=decelerate|standard|accelerate|linear`, `?t=0..1` fige l'animation à cet instant. Police : Nunito (Regular / Black).
 
 ## Formes physiques
 
-`shapes.html` : les 4 variants du fond wrap-up (Figma, composant `_Background` 6382:14782 : horloges, étoiles, bulles, cœurs). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le wrapup : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
+`shapes.html` : les 4 variants du fond (horloges, étoiles, bulles, cœurs). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le proto d'origine : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
 
 ## Lancer
 
@@ -36,7 +36,7 @@ Pour tester le gyroscope sur téléphone, la page doit être servie en HTTPS (ou
 index.html, reveal.html, data.html, shapes.html   pages du labo
 js/holo.js                shader du foil + gestion gyroscope / souris
 js/data.js              compteur à roues de Data simple
-js/physics.js           physique des formes (repris du wrapup)
+js/physics.js           physique des formes
 js/shapes.js            formes générées (tools/build-shapes.mjs)
 js/reveal.js              page de la médaille et barre de contrôle
 css/                      styles
