@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ec5a13">
+  <title>Labo — Page turn</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/shapes.css">
+  <link rel="stylesheet" href="css/pageturn.css">
+</head>
+<body class="shapes pageturn">
+  <nav class="lab-bar" id="bar" aria-label="Contrôles"></nav>
+
+  <div class="app" id="app">
+    <div class="layer" id="stage">
+      <!-- Page de dessous : l'écran suivant (fond d'horloges, voir shapes.html) -->
+      <div class="pt-b">
+        <div class="layer-bg" id="bg" aria-hidden="true"><div class="veil"></div></div>
+      </div>
+      <!-- Page du dessus : écran orange, découpée selon le pli -->
+      <div class="pt-shadow"><div class="pt-a" id="pt-a"><div class="pt-a-shade" id="pt-a-shade"></div></div></div>
+      <!-- Dos de la page repliée : la partie découpée, retournée autour du pli -->
+      <div class="pt-shadow pt-shadow--flap"><div class="pt-flap" id="pt-flap"></div></div>
+    </div>
+  </div>
+
+  <script src="js/shapes.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/pageturn.js"></script>
+</body>
+</html>

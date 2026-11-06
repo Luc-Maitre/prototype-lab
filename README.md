@@ -12,6 +12,10 @@ Le shader est le « Holographic foil » de Figma (WGSL), porté à l'identique e
 
 `shapes.html` : les 4 variants du fond (horloges, étoiles, bulles, cœurs). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le proto d'origine : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
 
+## Page turn
+
+`pageturn.html` : l'écran orange se tourne depuis le coin inférieur droit (petit coin replié de 64 px au repos, comme la maquette) et révèle l'écran suivant (fond d'horloges). Le pli est la médiatrice entre le coin d'origine et le coin tiré ; la page du dessus est découpée (`clip-path`) et la partie découpée est retournée autour du pli pour faire le dos de la page. Trois trajectoires du coin (Diagonale, Livre, Soulevé) changent l'angle du pli. On peut tirer le coin au doigt / à la souris (au-delà d'un seuil ou d'un geste lancé, le tour se termine ; sinon le coin revient), le toucher, ou utiliser « Tourner la page ». Paramètres : `?v=diagonale|livre|souleve`, `?duree=900`, `?c=x,y` (fige le coin), `?bare`. Touches `←` `→`.
+
 ## Lancer
 
 ```sh
@@ -33,7 +37,7 @@ Pour tester le gyroscope sur téléphone, la page doit être servie en HTTPS (ou
 ## Structure
 
 ```
-index.html, reveal.html, data.html, shapes.html   pages du labo
+index.html, reveal.html, data.html, shapes.html, pageturn.html   pages du labo
 js/holo.js                shader du foil + gestion gyroscope / souris
 js/data.js              compteur à roues de Data simple
 js/physics.js           physique des formes

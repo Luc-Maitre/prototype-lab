@@ -1,0 +1,24 @@
+/* Page turn (375 × 812). Couche du dessous : écran suivant ; du dessus : écran orange découpé selon un pli
+   (clip-path calculé par js/pageturn.js) ; au-dessus : le dos de la page, retourné autour du pli. */
+
+.pageturn .app { touch-action: none; }
+.pageturn .layer { overflow: visible; }
+
+.pt-b, .pt-shadow, .pt-a, .pt-flap, .pt-a-shade { position: absolute; left: 0; top: 0; width: 375px; height: 812px; }
+.pt-b .layer-bg { position: absolute; inset: 0; }
+
+.pt-shadow { filter: drop-shadow(0 0 7px rgba(21, 34, 51, .28)); pointer-events: none; }
+.pt-shadow--flap { filter: drop-shadow(-3px -3px 7px rgba(21, 34, 51, .30)); }
+.pt-a { background: var(--main); } /* « Main » orange du design */
+.pt-flap { background: #b84a14; transform-origin: 0 0; } /* dos de la page : orange foncé du coin Figma */
+
+.pt-a[hidden], .pt-flap[hidden] { display: none; }
+
+/* Champs de la barre */
+.lab-bar label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; line-height: 16px; color: var(--on-surface-dim); }
+.lab-bar input {
+  font: 600 14px/20px "Nunito Sans", system-ui, sans-serif;
+  padding: 6px 10px; border: 0; border-radius: 10px; background: #fff; color: var(--on-surface);
+  box-shadow: 0 1px 2px rgba(21, 34, 51, .12); width: 100%;
+}
+.lab-bar .replay { text-align: center; }
