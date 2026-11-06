@@ -1,0 +1,40 @@
+/* Médaille (375 × 812).
+   Médaille 327 × 327 à (24, 266) : sceau blanc, foil (canvas WebGL) découpé par la forme du sceau, titre. */
+
+.reveal .app { background: var(--main); }
+.reveal .stage { background: var(--main); }
+
+.unit {
+  left: 24px; top: 188px; width: 327px; margin: 0;
+  text-align: center;
+  font: 700 32px/38px var(--font-display);
+  color: #fff;
+}
+
+.medal {
+  left: 24px; top: 266px; width: 327px; height: 327px;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); /* inclinaison 3D pilotée par holo.js */
+  will-change: transform;
+}
+.medal > * { position: absolute; }
+.medal-base { left: 3.24px; top: 3.24px; width: 320.517px; height: 320.517px; }
+
+/* Le foil (617.785 × 558.679 à (−48.52, −30)) n'est visible que dans la forme du sceau */
+.medal-foil {
+  left: 3.24px; top: 3.24px; width: 320.517px; height: 320.517px;
+  -webkit-mask: url(../assets/medal-sceau.svg) center / 100% 100% no-repeat;
+  mask: url(../assets/medal-sceau.svg) center / 100% 100% no-repeat;
+}
+.medal-foil canvas {
+  position: absolute;
+  left: -51.76px; top: -33.24px; /* (−48.52, −30) moins le décalage du sceau */
+  width: 617.785px; height: 558.679px;
+}
+
+.medal-title {
+  left: 78px; top: 132.5px; width: 171px; margin: 0;
+  text-align: center; white-space: nowrap;
+  font: 900 58px/62px var(--font-display);
+  letter-spacing: -1.74px;
+  color: var(--main);
+}

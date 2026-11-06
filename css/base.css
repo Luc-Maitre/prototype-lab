@@ -1,0 +1,107 @@
+@font-face {
+  font-family: "Nunito";
+  src: url("../assets/fonts/Nunito-latin.woff2") format("woff2");
+  font-weight: 200 1000;
+  font-display: block;
+}
+@font-face {
+  font-family: "Nunito Sans";
+  src: url("../assets/fonts/NunitoSans-latin.woff2") format("woff2");
+  font-weight: 200 1000;
+  font-stretch: 75% 125%;
+  font-display: block;
+}
+
+:root {
+  --main: #ec5a13;
+  --on-main: #fff;
+  --on-surface: #152233;
+  --on-surface-dim: rgba(21, 34, 51, 0.72);
+  --surface: #fdf9f0;
+  --font-display: "Nunito", sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--surface);
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: "Nunito Sans", system-ui, sans-serif;
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+p, ul { margin: 0; padding: 0; }
+img { display: block; -webkit-user-drag: none; }
+button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+
+/* ---------- Cadre : plein écran sur mobile, « device » centré sur desktop ---------- */
+
+.app {
+  position: fixed;
+  inset: env(safe-area-inset-top, 0px) 0 0 0;
+  overflow: hidden;
+  background: var(--surface);
+  touch-action: manipulation;
+}
+
+@media (min-width: 600px) and (min-aspect-ratio: 3/4) {
+  html, body { background: #e8e4dc; }
+  .app {
+    inset: 50% auto auto 50%;
+    height: min(844px, 100dvh - 48px);
+    aspect-ratio: 375 / 812;
+    transform: translate(-50%, -50%);
+    border-radius: 44px;
+    box-shadow: 0 24px 64px rgba(21, 34, 51, 0.18);
+  }
+}
+
+/* Le calque partage le repère du design (375 × 812), mis à l'échelle par JS (--s). */
+.layer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 375px;
+  height: 812px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+}
+
+/* ---------- Écrans ---------- */
+
+.screen {
+  position: absolute;
+  left: 0;
+  top: -0.5px;
+  width: 375px;
+  height: 813px;
+  visibility: hidden;
+}
+.screen.is-active { visibility: visible; }
+.screen > * { position: absolute; }
+
+/* ---------- Debug capteurs (?debug) ---------- */
+
+.debug {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 10;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(21, 34, 51, 0.85);
+  color: #fff;
+  font: 11px/1.4 ui-monospace, monospace;
+  white-space: pre;
+  pointer-events: none;
+}
