@@ -67,9 +67,9 @@
   const canVibrate = typeof navigator.vibrate === "function";
   const haptics = { on: canVibrate && localStorage.getItem("shapes-haptics") !== "off", last: 0, prev: [] };
   const ROLL_MIN = 70;    // px/s : en dessous, les formes sont « posées », pas de vibration
-  const ROLL_GAP = [150, 55]; // ms entre deux pulsations : vitesse ROLL_MIN → ROLL_FAST
+  const ROLL_GAP = [190, 75]; // ms entre deux pulsations : vitesse ROLL_MIN → ROLL_FAST
   const ROLL_FAST = 600;  // px/s
-  const PULSE = 12;       // ms : léger (en dessous de ~10 ms, beaucoup de moteurs ne démarrent pas)
+  const PULSE = 9;        // ms : léger (en dessous de ~10 ms, beaucoup de moteurs ne démarrent pas)
   const IMPACT = 120;     // px/s : vitesse minimale avant inversion pour compter comme un choc
   function haptic(now) {
     const v = window.ShapesPhysics.velocities();
@@ -81,7 +81,7 @@
     });
     haptics.prev = v;
     if (!haptics.on || document.hidden) return;
-    if (hit && now - haptics.last > 70) { navigator.vibrate(hit > 350 ? 24 : 16); haptics.last = now; return; }
+    if (hit && now - haptics.last > 70) { navigator.vibrate(hit > 350 ? 17 : 12); haptics.last = now; return; }
     if (speed < ROLL_MIN) return;
     const k = Math.min(1, (speed - ROLL_MIN) / (ROLL_FAST - ROLL_MIN));
     if (now - haptics.last > ROLL_GAP[0] + (ROLL_GAP[1] - ROLL_GAP[0]) * k) { navigator.vibrate(PULSE); haptics.last = now; }
