@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fdf9f0">
+  <title>Labo — Data card</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/data.css">
+  <link rel="stylesheet" href="css/shapes.css">
+  <link rel="stylesheet" href="css/datacard.css">
+</head>
+<body class="data datacard">
+  <nav class="lab-bar" id="bar" aria-label="Contrôles"></nav>
+
+  <div class="app" id="app">
+    <div class="layer" id="bg" aria-hidden="true"><div class="veil"></div></div>
+    <div class="layer">
+      <main class="screens">
+        <section class="screen is-active" id="screen" aria-label="Data card">
+          <div class="dc" id="dc">
+            <div class="dc-block" id="dc-block">
+              <div class="dc-body" id="dc-body">
+                <img class="dc-shape" src="assets/datacard/shape.svg" width="280" height="125.031" alt="">
+                <div class="dc-lines">
+                  <div class="dc-line dc-big-clip"><p class="dc-big" id="dc-big"></p></div>
+                  <div class="dc-line dc-small-clip"><p class="dc-small" id="dc-small"></p></div>
+                </div>
+              </div>
+              <div class="dc-dot" id="dc-dot"><img src="assets/datacard/icon.svg" width="24" height="24" alt=""></div>
+            </div>
+            <div class="dc-label" id="dc-label"><span id="dc-label-text"></span></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/shapes.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/datacard.js"></script>
+</body>
+</html>

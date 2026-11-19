@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fdf9f0">
+  <title>Labo — Notation</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/data.css">
+  <link rel="stylesheet" href="css/shapes.css">
+  <link rel="stylesheet" href="css/notation.css">
+</head>
+<body class="data notation">
+  <nav class="lab-bar" id="bar" aria-label="Contrôles"></nav>
+
+  <div class="app" id="app">
+    <div class="layer" id="bg" aria-hidden="true"><div class="veil"></div></div>
+    <div class="layer">
+      <main class="screens">
+        <section class="screen nt is-active" id="screen" aria-label="Notation">
+          <p class="nt-top fx ds-top" id="nt-top"></p>
+          <p class="nt-value fx ds-value" id="nt-value"></p>
+          <p class="nt-unit fx ds-bottom" id="nt-unit"></p>
+          <div class="nt-stars fx" id="stars" aria-hidden="true"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/shapes.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/notation.js"></script>
+</body>
+</html>

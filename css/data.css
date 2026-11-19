@@ -1,6 +1,8 @@
 /* Data simple (320 px de large) : label haut, grand nombre qui défile, label bas.
    PSM remplacée par Nunito (Regular 400 / Black 900). */
 
+.data .app { background: var(--page-bg); }
+
 .data-simple {
   left: 27.5px; top: 50%; width: 320px;
   translate: 0 -50%;

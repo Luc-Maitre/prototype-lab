@@ -1,0 +1,27 @@
+/* Data card : cartouche incliné + bloc orange à découpe + pastille calendrier (Figma « Data card », 280 × 196,7).
+   PSM remplacée par Nunito (Bold → 900, Regular → 400). Fond : formes physiques « horloges ». */
+
+.dc { left: 47.5px; top: 308px; width: 280px; height: 196.7px; position: absolute; font-family: "Nunito", sans-serif; word-break: break-word; }
+
+.dc-block { position: absolute; left: 0; top: 71.6px; width: 280px; height: 125px; }
+.dc-body { position: absolute; inset: 0; }
+.dc-shape { position: absolute; left: 0; top: 0; display: block; }
+
+.dc-lines { position: absolute; left: 16px; top: 16px; width: 248px; display: flex; flex-direction: column; gap: 4px; color: var(--on-main); }
+.dc-line { overflow: hidden; }
+.dc-big { font: 900 50px/60px "Nunito", sans-serif; letter-spacing: -2px; white-space: nowrap; }
+.dc-small { font: 400 24px/29px "Nunito", sans-serif; }
+
+.dc-dot { position: absolute; left: 245px; top: 91px; width: 56px; height: 56px; border-radius: 50%; background: var(--main); display: grid; place-items: center; }
+.dc-dot img { display: block; }
+
+/* Cartouche : 200 px de large, centré en (82,41) dans la carte, incliné de -5° (texte +0,79°) */
+.dc-label {
+  position: absolute; left: -17.8px; top: 12.5px; width: 200px; height: 58px;
+  display: grid; place-items: center;
+  background: #3a4757; color: #fff;
+  font: 900 20px/normal "Nunito", sans-serif; letter-spacing: -.6px; text-align: center;
+  transform: rotate(-5deg);
+  z-index: 2;
+}
+.dc-label span { display: block; transform: rotate(.79deg); padding: 0 8px; }

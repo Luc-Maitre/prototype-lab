@@ -14,6 +14,7 @@
 .medal {
   left: 24px; top: 266px; width: 327px; height: 327px;
   transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); /* inclinaison 3D pilotée par holo.js */
+  filter: drop-shadow(0 24px 28px rgba(0, 0, 0, 0.1)); /* ombre du composant Figma « Medal » */
   will-change: transform;
 }
 .medal > * { position: absolute; }
@@ -38,3 +39,6 @@
   letter-spacing: -1.74px;
   color: var(--main);
 }
+
+.lab-bar .variants { display: flex; flex-direction: column; gap: 4px; }
+@media (max-width: 599px), (max-aspect-ratio: 3/4) { .lab-bar .variants { flex-direction: row; } }

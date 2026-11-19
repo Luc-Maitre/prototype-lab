@@ -18,6 +18,8 @@
   --on-surface: #152233;
   --on-surface-dim: rgba(21, 34, 51, 0.72);
   --surface: #fdf9f0;
+  /* Fond de page du template Figma : blanc, Main Container #FFE9DE, blanc 40 % */
+  --page-bg: linear-gradient(rgba(255, 255, 255, .4), rgba(255, 255, 255, .4)), #ffe9de;
   --font-display: "Nunito", sans-serif;
 }
 

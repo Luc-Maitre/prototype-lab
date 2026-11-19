@@ -8,6 +8,18 @@ Le shader est le « Holographic foil » de Figma (WGSL), porté à l'identique e
 
 `data.html` : composant « Data simple » avec le nombre qui défile comme un compteur à roues. Les textes entre `[]` (label haut, nombre, label bas) se modifient dans la barre, ainsi que la courbe et la durée. Paramètres : `?haut= ?valeur= ?bas= ?duree= ?courbe=decelerate|standard|accelerate|linear`, `?t=0..1` fige l'animation à cet instant. Police : Nunito (Regular / Black).
 
+## Favoris
+
+`favoris.html` : écran « Favoris », un compteur à roues (celui de Data simple, courbe linéaire, 1600 ms) qui monte de 0 à N pendant qu'une grille de cœurs se remplit, un cœur par incrément. Le lien est déclaratif (`data-count-to`, `data-count-sync`, événement `wrapup:count`). Chaque cœur a une case fixe ; le nombre de colonnes est calculé une fois d'après le total (min. 6, jusqu'à 30 : celui qui donne les plus gros cœurs, donc la largeur occupée quand le total grandit) et c'est la grille entière qui dézoome et se recentre à chaque incrément. Accroche, compteur (1 à 999 999 999 ; la grille s'arrête à 100 cœurs, le compteur continue) et unité se modifient dans la barre. Paramètres : `?haut= ?valeur= ?bas= ?duree= ?bare`. Le fond est la forme physique « cœurs » de la page Formes physiques (gyroscope / souris). Respecte `prefers-reduced-motion` (état final direct).
+
+## Notation
+
+`notation.html` : écran « Notation », un compteur à roues (celui de Favoris, de 0 à la note en dixièmes, courbe linéaire) et 5 étoiles de 52 px sur le fond « étoiles » physique (les formes de Formes physiques : gyroscope sur mobile, souris sur desktop). Deux animations d'étoiles au choix dans la barre : **Remplissage** (étoiles vides qui se remplissent de gauche à droite au rythme du compteur) et **Tampon** (chaque étoile arrive de l'avant quand le compteur franchit son entier, puis vague de pulsation). L'étoile partielle est à l'échelle de la note (3,5 = 3 pleines + 1 à 50 % de la largeur de la forme), le reste en brun. Paramètres : `?v=remplissage|tampon ?note=4.9 ?haut= ?bas= ?duree= ?t=0..1 ?bare`, touches `←` `→`. Respecte `prefers-reduced-motion`.
+
+## Data card
+
+`datacard.html` : composant « Data card » (cartouche incliné de -5°, bloc orange avec découpe, pastille calendrier), sans photo, sur le fond « horloges » physique. Animation d'entrée **Empilement** : le bloc monte, le cartouche tombe et se pose, les textes se révèlent par un masque, la pastille s'enclenche. Cartouche, grand nombre et petit texte se modifient dans la barre. Paramètres : `?label= ?big= ?small= ?duree=1000 ?t=0..1 ?bare`. Respecte `prefers-reduced-motion` (état final direct). Assets Figma dans `assets/datacard/`.
+
 ## Formes physiques
 
 `shapes.html` : les 4 variants du fond (horloges, étoiles, bulles, cœurs). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le proto d'origine : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
@@ -37,8 +49,10 @@ Pour tester le gyroscope sur téléphone, la page doit être servie en HTTPS (ou
 ## Structure
 
 ```
-index.html, reveal.html, data.html, shapes.html, pageturn.html   pages du labo
+index.html, reveal.html, data.html, favoris.html, notation.html, datacard.html, shapes.html, pageturn.html   pages du labo
 js/holo.js                shader du foil + gestion gyroscope / souris
+js/notation.js          compteur à roues + étoiles de Notation
+js/favoris.js           compteur à roues + grille de cœurs de Favoris
 js/data.js              compteur à roues de Data simple
 js/physics.js           physique des formes
 js/shapes.js            formes générées (tools/build-shapes.mjs)

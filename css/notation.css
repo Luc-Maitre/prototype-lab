@@ -1,0 +1,25 @@
+/* Notation : compteur à roues (styles .roll dans data.css) + 5 étoiles. Fond : formes physiques « étoiles » (css/shapes.css, js/physics.js). */
+
+.nt > p { left: 24px; width: 327px; }
+.nt-top { top: 112px; }
+.nt-value { top: 134px; }
+.nt-unit { top: 242px; }
+
+/* Entrée : fade de l'accroche (0 ms), puis du chiffre, de l'unité et des étoiles (250 ms). */
+.nt .fx { opacity: 0; transition: opacity 400ms cubic-bezier(0.2, 0, 0, 1) var(--d, 0ms); }
+.nt.is-in .fx, .nt.no-motion .fx { opacity: 1; }
+.nt-value, .nt-unit, .nt-stars { --d: 250ms; }
+
+/* Étoiles : 5 × 52 px, 6 px d'écart (284 px de large, centrées) */
+.nt-stars { left: 45.5px; top: 338px; width: 284px; height: 52px; display: flex; gap: 6px; }
+.star { position: relative; flex: none; width: 52px; height: 52px; transform-origin: 50% 90%; }
+.star.pre { visibility: hidden; }
+.star svg { position: absolute; inset: 0; width: 52px; height: 52px; }
+.s-empty { color: var(--main); opacity: .16; }
+.s-fill { color: var(--main); clip-path: inset(0 calc((1 - var(--cut, 1)) * 100%) 0 0); }
+/* Étoile partielle : le reste, plus sombre, apparaît une fois le compteur arrêté (comme la maquette) */
+.s-rest { color: #8a3510; opacity: 0; clip-path: inset(0 0 0 calc(var(--cut, 1) * 100%)); transition: opacity 250ms cubic-bezier(0.2, 0, 0, 1); }
+.star.settled .s-rest { opacity: 1; }
+
+.nt.resetting .fx, .nt.resetting .s-rest,
+.nt.no-motion .fx, .nt.no-motion .s-rest, .nt.no-motion .roll-d, .nt.no-motion .roll-sep { transition: none; }

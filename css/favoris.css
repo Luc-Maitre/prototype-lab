@@ -1,0 +1,33 @@
+/* Favoris : compteur à roues (styles .roll dans data.css) + grille de cœurs qui se remplit à chaque incrément. */
+
+.fav > p { left: 24px; width: 327px; }
+.fav-top { top: 94px; }
+.fav-value { top: 124px; }
+.fav-unit { top: 230px; }
+
+/* Entrée : fade de l'accroche (0 ms), puis du chiffre et de l'unité (250 ms). */
+.fav .fx { opacity: 0; transition: opacity 400ms cubic-bezier(0.2, 0, 0, 1) var(--d, 0ms); }
+.fav.is-in .fx, .fav.no-motion .fx { opacity: 1; }
+.fav-value, .fav-unit { --d: 250ms; }
+
+/* Grille : la grille entière dézoome (transform posé en JS), les cases des cœurs sont fixes. */
+.fav-grid {
+  left: 0; top: 296px;
+  width: 0; height: 0;
+  transform-origin: 0 0;
+  transition: transform 350ms cubic-bezier(0.2, 0, 0, 1);
+}
+.heart {
+  position: absolute; left: 0; top: 0;
+  width: 47.2px; height: 41.352px;
+  opacity: 0;
+  transition: opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+.heart svg { display: block; width: 100%; height: 100%; transform: scale(0); }
+.heart.is-on { opacity: 1; }
+.heart.is-on svg { transform: scale(1); transition: transform 300ms cubic-bezier(0.05, 0.9, 0.25, 1.35); }
+
+.fav.resetting .fav-grid, .fav.resetting .heart, .fav.resetting .heart svg,
+.fav.no-motion .fav-grid, .fav.no-motion .heart, .fav.no-motion .heart svg, .fav.no-motion .fx { transition: none; }
+.fav.no-motion .heart.is-on svg { transition: none; }
+.fav.no-motion .roll-d, .fav.no-motion .roll-sep { transition: none; }
