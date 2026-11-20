@@ -5,7 +5,7 @@
 // (symétrie axiale autour du pli) et dessinée en orange foncé : c'est le dos de la page.
 // Au repos, C = (311, 748) : le petit coin replié de 64 px de la maquette.
 // Interaction : tirer le coin, ou le toucher, ou « Tourner » ; relâcher au-delà d'un seuil termine le tour.
-// URL : ?v=diagonale|livre|souleve  ?duree=900  ?motion (ignore « réduire les animations »)
+// URL : ?duree=900  ?motion (ignore « réduire les animations »)
 
 (() => {
   const W = 375, H = 812;
@@ -15,19 +15,11 @@
   const RADIUS = 12.5;                // rayon du coin arrondi du dos (maquette)
   const RECT = [[0, 0], [W, 0], [W, H], [0, H]];
 
-  // ---------- Trajectoires : comment le coin va de REST à END ----------
-  // fx / fy = avancement en x et en y selon la progression u (0 → 1) : décalés, ils changent l'angle du pli.
-  const out = (u) => 1 - (1 - u) ** 2;
-  const inn = (u) => u * u;
-  const VARIANTS = {
-    diagonale: { nom: "Diagonale", note: "Le coin file vers le coin opposé : pli à 45°", fx: (u) => u, fy: (u) => u },
-    livre:     { nom: "Livre",     note: "Le coin part vers la gauche : pli presque vertical", fx: out, fy: inn },
-    souleve:   { nom: "Soulevé",   note: "Le coin monte d'abord : pli presque horizontal", fx: inn, fy: out },
-  };
+  // ---------- Trajectoire : le coin file en diagonale de REST vers END (pli à 45°) ----------
+  const DIAGONALE = { fx: (u) => u, fy: (u) => u };
 
   const params = new URLSearchParams(location.search);
   const state = {
-    variant: VARIANTS[params.get("v")] ? params.get("v") : "diagonale",
     duree: Number(params.get("duree")) || 900,
     turned: false,   // la page est-elle tournée ?
     C: [...REST],
@@ -125,7 +117,7 @@
   // from → to avec le décalage x/y propre à la variante ; reverse = même trajet parcouru de `to` vers `from`
   function run(from, to, { reverse = false, duration = state.duree, then } = {}) {
     cancelAnimationFrame(state.anim);
-    const v = VARIANTS[state.variant];
+    const v = DIAGONALE;
     const t0 = performance.now();
     const dur = reduced ? 1 : duration;
     const tick = (now) => {
@@ -210,23 +202,17 @@
 
   // ---------- Barre ----------
   function sync() {
-    bar.querySelectorAll("button[data-v]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === state.variant)));
     const toggle = bar.querySelector("[data-act=toggle]");
     if (toggle) toggle.textContent = state.turned ? "Revenir" : "Tourner la page";
-    history.replaceState(null, "", `?v=${state.variant}${params.has("duree") ? `&duree=${state.duree}` : ""}`);
+    history.replaceState(null, "", params.has("duree") ? `?duree=${state.duree}` : location.pathname);
   }
   bar.innerHTML = `<a class="back" href="index.html">← Labo</a><h1>Page turn</h1>
-    ${Object.entries(VARIANTS).map(([id, v]) => `<button type="button" data-v="${id}">${v.nom}<small>${v.note}</small></button>`).join("")}
     <label>Durée (ms)<input id="in-duree" type="number" min="200" step="100" value="${state.duree}"></label>
     <button type="button" class="replay" data-act="toggle">Tourner la page</button>
     <p class="hint">Tire le coin en bas à droite, ou touche-le.</p>`;
   bar.addEventListener("click", (e) => {
     const b = e.target.closest("button");
     if (!b) return;
-    if (b.dataset.v) { // changer de trajectoire rejoue le tour depuis le repos
-      cancelAnimationFrame(state.anim); state.anim = 0;
-      state.variant = b.dataset.v; state.turned = false; state.C = [...REST]; sync(); turn();
-    }
     if (b.dataset.act === "toggle") { if (state.turned) back(); else turn(); sync(); }
   });
   document.getElementById("in-duree").addEventListener("change", (e) => { state.duree = Math.max(200, Number(e.target.value) || 900); });

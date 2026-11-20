@@ -18,6 +18,12 @@ uniform vec2 uSealCenter;  // centre du sceau en points
 uniform vec3 uTint;
 uniform float uRainbow, uHue, uScale, uDir, uDist, uShift, uIntensity, uSoft, uLineInk;
 uniform vec2 uHl;          // position du reflet, en %
+uniform vec2 uOff;         // décalage du motif (shiftX, shiftY), en points
+uniform sampler2D uEng;    // gravure : carte de hauteur (alpha), centrée sur le sceau
+uniform float uEngOn, uEngSize;
+uniform sampler2D uTxt;    // titre : couleur d'encre (rgb) + couverture (alpha), centré sur le sceau
+uniform float uTxtOn;
+uniform vec2 uTxtSize;
 out vec4 outColor;
 
 float foilHash(vec2 p) {
@@ -43,7 +49,7 @@ void main() {
   float angle = uDir * 0.01745329252;
   vec2 axis = vec2(cos(angle), sin(angle));
   vec2 crossAxis = vec2(-axis.y, axis.x);
-  vec2 plane = (uv - vec2(0.5)) * vec2(aspect, 1.0);
+  vec2 plane = (uv - vec2(0.5) - uOff / uDims) * vec2(aspect, 1.0);
   vec2 p = vec2(dot(plane, axis), dot(plane, crossAxis)) / uScale;
   float n = foilNoise(p * 2.7 + vec2(4.1, 1.6));
   float warp = uDist * (0.22 * sin(p.y * 6.4 + n * 3.0) + 0.31 * (n - 0.5) + 0.07 * sin(p.x * 8.0 - p.y * 4.0));
@@ -78,13 +84,54 @@ void main() {
   float cov = 1.0 - smoothstep(max(0.45 - aa, 0.0), 0.45 + aa, dist);
   color *= 1.0 - cov * uLineInk;
 
+  // Gravure : le tracé est un creux dans le foil. Là où il passe, le foil est décalé (autre couleur d'arc-en-ciel),
+  // un peu assombri, et ses bords captent le reflet : clairs côté lumière, sombres de l'autre côté.
+  vec2 toLight = normalize(uHl / 100.0 * uDims - uSealCenter);
+  if (uEngOn > 0.5) {
+    vec2 q = lp / uEngSize + 0.5;
+    if (q.x > 0.0 && q.x < 1.0 && q.y > 0.0 && q.y < 1.0) {
+      float e = 1.5 / uEngSize;
+      float h = texture(uEng, q).a;
+      vec2 g = vec2(texture(uEng, q + vec2(e, 0.0)).a - texture(uEng, q - vec2(e, 0.0)).a,
+                    texture(uEng, q + vec2(0.0, e)).a - texture(uEng, q - vec2(0.0, e)).a);
+      float edge = dot(g, toLight);
+      vec3 shifted = foilSpectrum(spectralPhase + 0.33) * (0.62 + uTint * 0.32);
+      vec3 groove = mix(color * 0.94, shifted * metal + reflectedColor * highlight, 0.4 * uRainbow * 3.0);
+      color = mix(color, groove, h * 0.75);
+      color += reflectedColor * max(edge, 0.0) * 0.4;
+      color *= 1.0 + min(edge, 0.0) * 0.18;
+    }
+  }
+
+  // Titre : encre imprimée sur le foil. Elle garde sa couleur mais en prend la lumière : ton qui varie avec les bandes,
+  // reflet qui la traverse, léger bord biseauté côté lumière.
+  if (uTxtOn > 0.5) {
+    vec2 tq = lp / uTxtSize + 0.5;
+    if (tq.x > 0.0 && tq.x < 1.0 && tq.y > 0.0 && tq.y < 1.0) {
+      vec4 t = texture(uTxt, tq);
+      vec2 e = vec2(1.3) / uTxtSize;
+      vec2 g = vec2(texture(uTxt, tq + vec2(e.x, 0.0)).a - texture(uTxt, tq - vec2(e.x, 0.0)).a,
+                    texture(uTxt, tq + vec2(0.0, e.y)).a - texture(uTxt, tq - vec2(0.0, e.y)).a);
+      float edge = dot(g, toLight);
+      vec3 ink = t.rgb;
+      vec3 sheen = foilSpectrum(spectralPhase + 0.12);
+      vec3 res = ink * (0.7 + 0.6 * metal);
+      res = mix(res, res * sheen * 1.6, 0.28);
+      res += reflectedColor * (0.08 * highlight + 0.12 * reflectedBand * (0.3 + lightField));
+      res += reflectedColor * max(edge, 0.0) * 0.6;
+      res *= 1.0 + min(edge, 0.0) * 0.4;
+      color = mix(color, res, t.a);
+    }
+  }
+
   outColor = vec4(clamp(color, vec3(0.0), vec3(1.0)), 1.0);
 }`;
 
   // Réglages du Figma (calque Foil) ; `tilt` = amplitude de la réaction à l'inclinaison (−1…1).
   const FIGMA = {
-    tint: [1, 0.6371611952781677, 0.46071213483810425],
-    rainbow: 0, hue: 0, scale: 1.04, dir: 94, dist: 1.28, intensity: 1.3, soft: 0.6, hl: [32, 24],
+    tint: [0.9098039269447327, 0.5137255191802979, 0.3843137323856354],
+    rainbow: 0.254, hue: 0, scale: 1.6, dir: 95, dist: 1.28, intensity: 1.63, soft: 0.71, hl: [27.89, 25.17],
+    shiftX: 17.7, shiftY: 19.4,
     lineInk: 0.07,
     tilt: { hl: 28, shift: 0.35, dir: 8, hue: 0, rainbow: 0 },
   };
@@ -116,6 +163,23 @@ void main() {
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     const U = (name) => gl.getUniformLocation(prog, name);
+
+    // Gravure (texture sur l'unité 0 ; vide par défaut)
+    const engTex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, engTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+    for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+    gl.uniform1i(U("uEng"), 0);
+    const txtTex = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, txtTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(4));
+    for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+    gl.uniform1i(U("uTxt"), 1);
+    gl.activeTexture(gl.TEXTURE0);
+    let txtOn = false, txtW = 300, txtH = 140;
+    let engOn = false, engSize = 250, engSource = null;
 
     let cfg = { ...FIGMA, ...preset, tilt: { ...FIGMA.tilt, ...preset.tilt } };
     let w = 1, h = 1;
@@ -149,7 +213,12 @@ void main() {
       gl.uniform1f(U("uIntensity"), cfg.intensity);
       gl.uniform1f(U("uSoft"), cfg.soft);
       gl.uniform2f(U("uHl"), cfg.hl[0] + t.hl * cur.x, cfg.hl[1] + t.hl * cur.y);
+      gl.uniform2f(U("uOff"), cfg.shiftX, cfg.shiftY);
       gl.uniform1f(U("uLineInk"), cfg.lineInk);
+      gl.uniform1f(U("uTxtOn"), txtOn ? 1 : 0);
+      gl.uniform2f(U("uTxtSize"), txtW, txtH);
+      gl.uniform1f(U("uEngOn"), engOn ? 1 : 0);
+      gl.uniform1f(U("uEngSize"), engSize);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       onTilt?.(cur.x, cur.y);
     }
@@ -211,6 +280,24 @@ void main() {
     return {
       resize,
       setPreset(p) { cfg = { ...FIGMA, ...p, tilt: { ...FIGMA.tilt, ...p.tilt } }; dirty = true; },
+      // source : canvas carré centré sur le sceau (côté `size` points) ; null = pas de gravure
+      setEngraving(source, size = 250) {
+        engSource = source; engSize = size;
+        if (source) { gl.bindTexture(gl.TEXTURE_2D, engTex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source); }
+        dirty = true;
+      },
+      // source : canvas centré sur le sceau, w × h points ; null = pas de titre dans le foil
+      setText(source, w = 300, h = 140) {
+        txtW = w; txtH = h; txtOn = !!source;
+        if (source) {
+          gl.activeTexture(gl.TEXTURE1);
+          gl.bindTexture(gl.TEXTURE_2D, txtTex);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+          gl.activeTexture(gl.TEXTURE0);
+        }
+        dirty = true;
+      },
+      showEngraving(on) { engOn = !!on && !!engSource; dirty = true; },
       pin(x, y) { pinned = true; source = "fixe"; target.x = x; target.y = y; },
       recalibrate() { base = null; target.x = 0; target.y = 0; },
       requestSensors,

@@ -7,6 +7,7 @@
   <title>Labo — Médaille holographique</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/lab.css">
+  <link rel="stylesheet" href="css/data.css">
   <link rel="stylesheet" href="css/reveal.css">
 </head>
 <body class="reveal">
@@ -20,7 +21,7 @@
           <div class="medal" id="medal">
             <img class="medal-base" src="assets/medal-sceau.svg" alt="">
             <div class="medal-foil"><canvas id="foil" width="617" height="559"></canvas></div>
-            <p class="medal-title">Holo</p>
+            <p class="medal-title"><span class="mt-top" id="mt-top">Grand</span><span class="mt-bottom" id="mt-bottom">bravo</span></p>
           </div>
         </section>
       </main>
@@ -28,6 +29,7 @@
   </div>
 
   <script src="js/holo.js"></script>
+  <script src="js/engravings.js"></script>
   <script src="js/reveal.js"></script>
 </body>
 </html>

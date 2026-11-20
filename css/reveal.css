@@ -33,12 +33,20 @@
 }
 
 .medal-title {
-  left: 78px; top: 132.5px; width: 171px; margin: 0;
+  /* Cadre « Title » du composant Figma : 259 × 106, 2 lignes centrées, interligne −10 */
+  left: 34px; top: 110.5px; width: 259px; height: 106px; margin: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
   text-align: center; white-space: nowrap;
-  font: 900 58px/62px var(--font-display);
-  letter-spacing: -1.74px;
-  color: var(--main);
+  font: 900 48px/58px var(--font-display);
+  letter-spacing: -0.03em;
+  opacity: 0; /* le titre est dessiné dans le foil (shader) ; ce texte ne sert que de source et pour l'accessibilité */
 }
+.medal-title span { display: block; height: 58px; }
+.medal-title .mt-top { color: var(--main); }
+.medal-title .mt-bottom { color: var(--on-surface); margin-top: -10px; }
 
 .lab-bar .variants { display: flex; flex-direction: column; gap: 4px; }
 @media (max-width: 599px), (max-aspect-ratio: 3/4) { .lab-bar .variants { flex-direction: row; } }
+
+.lab-bar .switch { flex-direction: row; align-items: center; gap: 8px; cursor: pointer; }
+.lab-bar .switch input { width: auto; margin: 0; box-shadow: none; }
