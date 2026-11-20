@@ -78,6 +78,7 @@
     <button type="button" class="replay" id="prev">← Écran précédent</button>`;
   function counter() { $("counter").textContent = `Écran ${state.index + 1} / ${SCREENS.length} : ${SCREENS[state.index].titre}`; }
   counter();
+  window.Haptics.init({ bar, reduced }); // les vibrations des formes physiques, comme sur la page Formes
   $("next").addEventListener("click", () => go(1));
   $("prev").addEventListener("click", () => go(-1));
   addEventListener("keydown", (e) => {
