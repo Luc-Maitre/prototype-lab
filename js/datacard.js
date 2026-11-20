@@ -35,8 +35,10 @@
   fitScale();
 
   // Fond : formes physiques « horloges » (js/physics.js : gyroscope / souris)
-  window.ShapesPhysics.init();
-  window.ShapesPhysics.setVariant("clocks");
+  if (!window.WRAPUP) {
+    window.ShapesPhysics.init();
+    window.ShapesPhysics.setVariant("clocks");
+  }
 
   // ---------- Lecture ----------
   let anims = [];
@@ -54,6 +56,14 @@
       const ms = Math.min(1, Math.max(0, Number(params.get("t")) || 0)) * total;
       anims.forEach((a) => { a.pause(); a.currentTime = ms; });
     }
+  }
+
+  // Intégré à un écran (wrapup.html) : l'orchestrateur pilote le jeu, la barre et le fond
+  if (window.WRAPUP) {
+    const setTexts = () => { $("dc-label-text").textContent = state.label; els.big.textContent = state.big; els.small.textContent = state.small; };
+    setTexts();
+    window.WRAPUP.card = { state, play, setTexts, root: $("dc") };
+    return;
   }
 
   // ---------- Barre ----------

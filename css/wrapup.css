@@ -1,0 +1,8 @@
+/* Écran Wrap-up : Data simple (haut) puis Data card, sur les formes physiques.
+   Positions du template Figma « Template wrap-up » (375 × 812) : Data simple x24 y112, Data card x47.5 (bloc bas à y≈519). */
+
+.wrapup .data-simple { left: 24px; top: 112px; width: 327px; translate: none; }
+.wrapup .dc { top: 323px; visibility: hidden; }
+.wrapup .dc.is-shown { visibility: visible; }
+
+.lab-bar select { width: 100%; }

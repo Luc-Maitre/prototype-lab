@@ -1,0 +1,7 @@
+/* Transitions entre écrans : deux cadres plein écran empilés dans le « device » ; les transitions sont animées par js/wrapup-transitions.js. */
+
+.wtr-view { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; z-index: 1; pointer-events: none; }
+.wtr-view[hidden] { display: none; }
+
+.lab-bar .replay + .replay { margin-top: 0; background: #fff; color: var(--on-surface); }
+.lab-bar .counter { font-size: 12px; line-height: 16px; color: var(--on-surface-dim); }

@@ -92,6 +92,10 @@ button { font: inherit; color: inherit; border: 0; background: none; padding: 0;
 .screen.is-active { visibility: visible; }
 .screen > * { position: absolute; }
 
+/* ?sansfond : écran transparent (le fond est dessiné par la page parente) */
+.sansfond, .sansfond body, .sansfond .app { background: transparent !important; box-shadow: none; }
+.sansfond #bg { display: none; }
+
 /* ---------- Debug capteurs (?debug) ---------- */
 
 .debug {

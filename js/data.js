@@ -33,7 +33,7 @@
 
   const app = document.getElementById("app");
   const bar = document.getElementById("bar");
-  if (params.has("bare")) bar.hidden = true;
+  if (params.has("bare") || window.WRAPUP) bar.hidden = true;
   const elTop = document.getElementById("ds-top");
   const elValue = document.getElementById("ds-value");
   const elBottom = document.getElementById("ds-bottom");
@@ -132,6 +132,9 @@
     elTop.textContent = state.haut;
     elBottom.textContent = state.bas;
   }
+
+  // Intégré à un écran (wrapup.html) : l'orchestrateur pilote le jeu et la barre
+  if (window.WRAPUP) { window.WRAPUP.data = { state, play, renderLabels, delay: 250 }; return; }
 
   // ---------- Barre ----------
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");

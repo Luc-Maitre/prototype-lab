@@ -14,7 +14,7 @@ Le shader est le « Holographic foil » de Figma (WGSL), porté à l'identique e
 
 ## Notation
 
-`notation.html` : écran « Notation », un compteur à roues (celui de Favoris, de 0 à la note en dixièmes, courbe linéaire) et 5 étoiles de 52 px sur le fond « étoiles » physique (les formes de Formes physiques : gyroscope sur mobile, souris sur desktop). Deux animations d'étoiles au choix dans la barre : **Remplissage** (étoiles vides qui se remplissent de gauche à droite au rythme du compteur) et **Tampon** (chaque étoile arrive de l'avant quand le compteur franchit son entier, puis vague de pulsation). L'étoile partielle est à l'échelle de la note (3,5 = 3 pleines + 1 à 50 % de la largeur de la forme), le reste en brun. Paramètres : `?v=remplissage|tampon ?note=4.9 ?haut= ?bas= ?duree= ?t=0..1 ?bare`, touches `←` `→`. Respecte `prefers-reduced-motion`.
+`notation.html` : écran « Notation », un compteur à roues (celui de Favoris, de 0 à la note en dixièmes, courbe linéaire) et 5 étoiles de 52 px sur le fond « étoiles » physique (les formes de Formes physiques : gyroscope sur mobile, souris sur desktop). Animation **Remplissage** : les étoiles vides se remplissent de gauche à droite au rythme du compteur, puis une vague de pulsation. L'étoile partielle est à l'échelle de la note (3,5 = 3 pleines + 1 à 50 % de la largeur de la forme), le reste de l'étoile reste vide. Paramètres : `?note=4.9 ?haut= ?bas= ?duree= ?t=0..1 ?bare`. Respecte `prefers-reduced-motion`.
 
 ## Data card
 
@@ -24,9 +24,17 @@ Le shader est le « Holographic foil » de Figma (WGSL), porté à l'identique e
 
 `shapes.html` : les 4 variants du fond (horloges, étoiles, bulles, cœurs). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le proto d'origine : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
 
+## Écran Wrap-up
+
+`wrapup.html` : orchestration d'un écran complet du template Figma « Wrap-up » (Data simple en haut, puis Data card, sur les formes physiques). L'ordre est fixe : le compteur de la Data simple défile, puis la Data card entre (empilement) après une pause. Les composants sont ceux de `data.html` et `datacard.html`, pilotés en mode `window.WRAPUP` (pas de barre ni de lecture automatique dans `js/data.js` / `js/datacard.js`) ; `js/wrapup.js` enchaîne la séquence. Positions du Figma : Data simple en (24, 112), Data card calée sur le bas à y≈519. Exemple : « Bravo ! Vous avez publié **12** annonces cette année », puis « Meilleure vente **320 €** un vélo de ville ». Paramètres : `?haut= ?valeur= ?bas= ?label= ?big= ?small= ?fond=clocks|stars|bubbles|hearts ?pause=50 ?bare`. Respecte `prefers-reduced-motion`.
+
 ## Page turn
 
-`pageturn.html` : l'écran orange se tourne depuis le coin inférieur droit (petit coin replié de 64 px au repos, comme la maquette) et révèle l'écran suivant (fond d'horloges). Le pli est la médiatrice entre le coin d'origine et le coin tiré ; la page du dessus est découpée (`clip-path`) et la partie découpée est retournée autour du pli pour faire le dos de la page. Trois trajectoires du coin (Diagonale, Livre, Soulevé) changent l'angle du pli. On peut tirer le coin au doigt / à la souris (au-delà d'un seuil ou d'un geste lancé, le tour se termine ; sinon le coin revient), le toucher, ou utiliser « Tourner la page ». Paramètres : `?v=diagonale|livre|souleve`, `?duree=900`, `?c=x,y` (fige le coin), `?bare`. Touches `←` `→`.
+`pageturn.html` : l'écran orange se tourne depuis le coin inférieur droit (petit coin replié de 64 px au repos, comme la maquette) et révèle l'écran suivant (fond d'horloges). Le pli est la médiatrice entre le coin d'origine et le coin tiré ; la page du dessus est découpée (`clip-path`) et la partie découpée est retournée autour du pli pour faire le dos de la page. Le coin file en diagonale vers le coin opposé (pli à 45°). On peut tirer le coin au doigt / à la souris (au-delà d'un seuil ou d'un geste lancé, le tour se termine ; sinon le coin revient), le toucher, ou utiliser « Tourner la page ». Paramètres : `?duree=900`, `?c=x,y` (fige le coin), `?bare`. Touches `←` `→`.
+
+## Transitions entre écrans
+
+`wrapup-transitions.html` : passage d'un écran au suivant (Data → Favoris → Notation) en glissement horizontal (courbe Standard, 450 ms). Le page turn est réservé à deux cas : intro → premier écran, et reveal → écran d'avant. Les écrans sont les pages du labo chargées en `?bare` dans deux cadres ; l'écran entrant est rechargé à chaque passage, donc son animation d'entrée rejoue pendant la transition. Le fond de formes physiques appartient à la page (horloges, cœurs, étoiles selon l'écran) : il ne coupe pas (les formes du nouveau fond remontent, celles de l'ancien tombent) et, au glissement, il reçoit une impulsion horizontale (`ShapesPhysics.push`) qui le fait traîner derrière le mouvement puis revenir. Les écrans sont chargés avec `?sansfond` (transparents, sans physique propre : géré dans `js/physics.js` et `css/base.css`). « Écran précédent » inverse le sens. Paramètres : `?duree=450`, `?bare`. Touches `←` `→`. Respecte `prefers-reduced-motion` (changement direct).
 
 ## Lancer
 
@@ -49,10 +57,11 @@ Pour tester le gyroscope sur téléphone, la page doit être servie en HTTPS (ou
 ## Structure
 
 ```
-index.html, reveal.html, data.html, favoris.html, notation.html, datacard.html, shapes.html, pageturn.html   pages du labo
+index.html, reveal.html, data.html, favoris.html, notation.html, datacard.html, shapes.html, pageturn.html, wrapup.html, wrapup-transitions.html   pages du labo
 js/holo.js                shader du foil + gestion gyroscope / souris
 js/notation.js          compteur à roues + étoiles de Notation
 js/favoris.js           compteur à roues + grille de cœurs de Favoris
+js/wrapup.js            orchestration de l'écran Wrap-up
 js/data.js              compteur à roues de Data simple
 js/physics.js           physique des formes
 js/shapes.js            formes générées (tools/build-shapes.mjs)

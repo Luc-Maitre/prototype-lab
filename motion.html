@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Labo — Motion</title>
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    html { height: auto; overflow-y: auto; overscroll-behavior: auto; }
+    body { height: auto; min-height: 100%; overflow: visible; overscroll-behavior: auto; }
+    main { max-width: 640px; margin: 0 auto; padding: 32px 24px 64px; font-family: "Nunito Sans", sans-serif; }
+    a.back { color: var(--on-surface-dim); text-decoration: none; font-size: 14px; }
+    h1 { font: 900 40px/1 var(--font-display); margin: 16px 0 8px; }
+    h2 { font: 800 13px/1 "Nunito Sans", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--on-surface-dim); margin: 40px 0 12px; }
+    h3 { margin: 0 0 2px; font-size: 18px; }
+    p { margin: 0 0 8px; }
+    .lead { color: var(--on-surface-dim); margin-bottom: 16px; }
+    .ctl { position: sticky; top: 0; z-index: 2; display: flex; gap: 12px; align-items: center; padding: 12px 0; background: var(--surface); font-size: 14px; }
+    .ctl button { padding: 8px 14px; border-radius: 12px; background: var(--main); color: var(--on-main); font-weight: 700; }
+    .ctl select { padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(21, 34, 51, .2); background: #fff; font: inherit; }
+    .curve { padding: 16px 20px; margin-bottom: 12px; border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(21, 34, 51, .12); }
+    .curve-head { display: flex; gap: 12px; align-items: center; }
+    .curve code { font-size: 12px; color: var(--on-surface-dim); }
+    .graph { width: 120px; height: 120px; flex: none; margin: -20px -4px -20px -20px; }
+    .g-box { fill: none; stroke: rgba(21, 34, 51, .18); stroke-dasharray: 2 3; }
+    .g-line { fill: none; stroke: var(--main); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .track { position: relative; height: 4px; margin: 12px 10px 16px; border-radius: 2px; background: rgba(21, 34, 51, .1); }
+    .dot { position: absolute; top: 50%; left: 0; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; background: var(--main); }
+    .usage { font-size: 13px; color: var(--on-surface-dim); margin: 0; }
+    .usage a { color: inherit; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid rgba(21, 34, 51, .1); vertical-align: top; }
+    td:nth-child(2) { white-space: nowrap; }
+    ul { padding-left: 20px; margin: 0; }
+    ul.cards { list-style: none; padding: 0; }
+    ul.cards li { padding: 14px 20px; margin-bottom: 8px; border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(21, 34, 51, .12); font-size: 14px; }
+    ul.cards strong { display: block; font-size: 16px; margin-bottom: 2px; }
+    em { font: 700 11px/1 "Nunito Sans", sans-serif; padding: 2px 6px; border-radius: 6px; background: var(--main); color: var(--on-main); font-style: normal; vertical-align: middle; }
+    code.tok { color: #d6177a; }
+    .events { line-height: 2; }
+    small { color: var(--on-surface-dim); }
+    li { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="index.html">← Labo</a>
+    <h1>Motion</h1>
+    <p class="lead">Reprend la guideline Motion de Spark (principes, courbes, durées, événements) et signale ce que les labos font en plus ou autrement.</p>
+
+    <div class="ctl">
+      <button id="replay" type="button">Rejouer</button>
+      <label>Durée de la démo <select id="dur"><option value="400">400 ms</option><option value="800" selected>800 ms</option><option value="1500">1500 ms</option></select></label>
+    </div>
+
+    <h2>Principes</h2>
+    <ul class="cards" id="principes"></ul>
+    <h2>Deux catégories</h2>
+    <ul class="cards" id="categories"></ul>
+
+    <h2>Courbes</h2>
+    <div id="curves-guide"></div>
+    <h2>Courbes avec rebond (back)</h2>
+    <div id="curves-back"></div>
+    <h2>Courbes du labo, hors guideline</h2>
+    <p class="lead">Utilisées dans les labos mais absentes de la guideline Spark : à garder, remplacer ou proposer au design system.</p>
+    <div id="curves-labo"></div>
+
+    <h2>Durées</h2>
+    <table><tbody id="durees"></tbody></table>
+    <h2>Durées dans le labo</h2>
+    <table><tbody id="durees-labo"></tbody></table>
+
+    <h2>Événements déclencheurs</h2>
+    <p id="events" class="events"></p>
+
+    <h2>Règles</h2>
+    <ul id="regles"></ul>
+  </main>
+  <script src="js/motion.js"></script>
+</body>
+</html>

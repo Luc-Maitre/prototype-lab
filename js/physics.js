@@ -11,6 +11,13 @@
 (() => {
   const DATA = window.SHAPES;
 
+  // ?sansfond : la page est un écran transparent posé sur le fond d'une page parente (labo Transitions du Wrap-up).
+  if (new URLSearchParams(location.search).has("sansfond")) {
+    document.documentElement.classList.add("sansfond");
+    window.ShapesPhysics = { init() {}, setVariant() {}, push() {}, variants: () => Object.keys(DATA), velocities: () => [] };
+    return;
+  }
+
   // Réglages par calque : gain = profondeur (l'arrière bouge moins), hz/zeta = ressort.
   const ROLES = {
     blue:   { gain: 0.55, hz: 0.75, zeta: 0.32 },
@@ -297,6 +304,8 @@
 
   window.ShapesPhysics = {
     init, setVariant, variants: () => Object.keys(variants),
+    // Impulsion horizontale (px/s) : le fond est « embarqué » par un mouvement de l'écran, chaque forme selon sa profondeur
+    push: (vx) => { if (!reduceMotion) for (const b of Object.values(bodies)) b.vx += vx * b.p.gain; },
     // vitesses (px/s) des corps de la variante affichée, pour le retour haptique
     velocities: () => (active ? variants[active].map((s) => bodies[s.body]) : []).map((b) => ({ vx: b.vx, vy: b.vy })),
   };
