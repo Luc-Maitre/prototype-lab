@@ -20,13 +20,17 @@ Le shader est le « Holographic foil » de Figma (WGSL), porté à l'identique e
 
 `datacard.html` : composant « Data card » (cartouche incliné de -5°, bloc orange avec découpe, pastille calendrier), sans photo, sur le fond « horloges » physique. Animation d'entrée **Empilement** : le bloc monte, le cartouche tombe et se pose, les textes se révèlent par un masque, la pastille s'enclenche. Cartouche, grand nombre et petit texte se modifient dans la barre. Paramètres : `?label= ?big= ?small= ?duree=1000 ?t=0..1 ?bare`. Respecte `prefers-reduced-motion` (état final direct). Assets Figma dans `assets/datacard/`.
 
+## Abonnés
+
+`abonnes.html` : écran « Vous êtes suivi par 12 personnes » du template Figma Wrap-up (6784:14492). La Data simple est celle de `data.html` (`js/data.js` en mode `window.WRAPUP`), aux tailles du Figma (20 / 110 / 28 px), suivie de 11 bulles d'avatar sur 2 rangées (orange, gris, pêche ; assets dans `assets/followers/`) sur le fond « abonnés » physique. Le nombre de bulles est fixe, quel que soit le nombre d'abonnés. Entrée des bulles **Essaim** : elles partent du centre et s'écartent jusqu'à leur place, les plus proches du centre d'abord (ressort simulé puis joué en Web Animations). Les bulles partent en même temps que le compteur ; on règle l'écart entre elles. Paramètres : `?ecart=70 ?haut= ?valeur= ?bas= ?t=0..1 ?bare`. Respecte `prefers-reduced-motion`.
+
 ## Formes physiques
 
-`shapes.html` : les 4 variants du fond (horloges, étoiles, bulles, cœurs). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le proto d'origine : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
+`shapes.html` : les 7 variants du fond (horloges, étoiles, bulles, cœurs, étiquettes, pièces, abonnés). Chaque variant a 3 formes (bleu, orange, pêche) qui se comportent comme dans le proto d'origine : ressort amorti + gravité de l'accéléromètre (mobile) ou de la souris (desktop), roulement des formes, houle ambiante, chute des anciennes formes et remontée des nouvelles au changement de variant. `?v=clocks|stars|bubbles|hearts|tags|coins|followers`, `?debug`, `?bare`, `←` `→`. Sur iOS, la permission capteurs est demandée au premier tap. Les SVG viennent de Figma (`assets/backgrounds/`) et `node tools/build-shapes.mjs` régénère `js/shapes.js`.
 
-## Écran Wrap-up
+## Data + Data card
 
-`wrapup.html` : orchestration d'un écran complet du template Figma « Wrap-up » (Data simple en haut, puis Data card, sur les formes physiques). L'ordre est fixe : le compteur de la Data simple défile, puis la Data card entre (empilement) après une pause. Les composants sont ceux de `data.html` et `datacard.html`, pilotés en mode `window.WRAPUP` (pas de barre ni de lecture automatique dans `js/data.js` / `js/datacard.js`) ; `js/wrapup.js` enchaîne la séquence. Positions du Figma : Data simple en (24, 112), Data card calée sur le bas à y≈519. Exemple : « Bravo ! Vous avez publié **12** annonces cette année », puis « Meilleure vente **320 €** un vélo de ville ». Paramètres : `?haut= ?valeur= ?bas= ?label= ?big= ?small= ?fond=clocks|stars|bubbles|hearts ?pause=50 ?bare`. Respecte `prefers-reduced-motion`.
+`wrapup.html` : orchestration d'un écran complet du template Figma « Wrap-up » (Data simple en haut, puis Data card, sur les formes physiques). L'ordre est fixe : le compteur de la Data simple défile, puis la Data card entre (empilement) après une pause. Les composants sont ceux de `data.html` et `datacard.html`, pilotés en mode `window.WRAPUP` (pas de barre ni de lecture automatique dans `js/data.js` / `js/datacard.js`) ; `js/wrapup.js` enchaîne la séquence. Positions du Figma : Data simple en (24, 112), Data card calée sur le bas à y≈519. Exemple : « Bravo ! Vous avez publié **12** annonces cette année », puis « Meilleure vente **320 €** un vélo de ville ». Paramètres : `?haut= ?valeur= ?bas= ?label= ?big= ?small= ?fond=clocks|stars|bubbles|hearts|tags|coins|followers ?pause=50 ?bare`. Respecte `prefers-reduced-motion`.
 
 ## Page turn
 
@@ -57,12 +61,13 @@ Pour tester le gyroscope sur téléphone, la page doit être servie en HTTPS (ou
 ## Structure
 
 ```
-index.html, reveal.html, data.html, favoris.html, notation.html, datacard.html, shapes.html, pageturn.html, wrapup.html, wrapup-transitions.html   pages du labo
+index.html, reveal.html, data.html, abonnes.html, favoris.html, notation.html, datacard.html, shapes.html, pageturn.html, wrapup.html, wrapup-transitions.html   pages du labo
 js/holo.js                shader du foil + gestion gyroscope / souris
 js/notation.js          compteur à roues + étoiles de Notation
 js/favoris.js           compteur à roues + grille de cœurs de Favoris
 js/wrapup.js            orchestration de l'écran Wrap-up
 js/data.js              compteur à roues de Data simple
+js/abonnes.js           bulles d'avatar de l'écran Abonnés (5 entrées)
 js/physics.js           physique des formes
 js/shapes.js            formes générées (tools/build-shapes.mjs)
 js/reveal.js              page de la médaille et barre de contrôle

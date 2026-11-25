@@ -1,13 +1,13 @@
-// Labo « Écran Wrap-up » : orchestration d'un écran = Data simple, puis Data card, sur les formes physiques.
+// Labo « Data + Data card » : orchestration d'un écran = Data simple, puis Data card, sur les formes physiques.
 // Ordre fixe : le compteur de la Data simple défile, puis la Data card entre (empilement) une fois qu'il est arrivé.
 // Les composants viennent de js/data.js et js/datacard.js (mode window.WRAPUP). Fond : js/physics.js.
-// URL : ?haut= ?valeur= ?bas= ?label= ?big= ?small= ?fond=clocks|stars|bubbles|hearts ?pause=50 ?bare
+// URL : ?haut= ?valeur= ?bas= ?label= ?big= ?small= ?fond=clocks|stars|bubbles|hearts|tags|coins|followers ?pause=50 ?bare
 
 (() => {
   const { data, card } = window.WRAPUP;
   const params = new URLSearchParams(location.search);
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const NAMES = { clocks: "Horloges", stars: "Étoiles", bubbles: "Bulles", hearts: "Cœurs" };
+  const NAMES = { clocks: "Horloges", stars: "Étoiles", bubbles: "Bulles", hearts: "Cœurs", tags: "Étiquettes", coins: "Pièces", followers: "Abonnés" };
   const $ = (id) => document.getElementById(id);
   const bar = $("bar");
   bar.hidden = params.has("bare");
@@ -46,7 +46,7 @@
 
   // ---------- Barre ----------
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-  bar.innerHTML = `<a class="back" href="index.html">← Labo</a><h1>Écran Wrap-up</h1>
+  bar.innerHTML = `<a class="back" href="index.html">← Labo</a><h1>Data + Data card</h1>
     <label>[Top label]<input id="in-haut" type="text" value="${esc(data.state.haut)}"></label>
     <label>[1234]<input id="in-valeur" type="text" inputmode="numeric" value="${esc(data.state.valeur)}"></label>
     <label>[bottom label]<input id="in-bas" type="text" value="${esc(data.state.bas)}"></label>

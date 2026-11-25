@@ -1,9 +1,9 @@
-// Labo « Formes physiques » : les 4 variants du fond (horloges, étoiles, bulles, cœurs).
+// Labo « Formes physiques » : les 7 variants du fond (horloges, étoiles, bulles, cœurs, étiquettes, pièces, abonnés).
 // Les formes réagissent à l'accéléromètre (mobile) ou à la souris (desktop) : voir js/physics.js.
-// Touches ← → : changer de variant. URL : ?v=clocks|stars|bubbles|hearts, ?debug, ?bare, ?motion (ignore « réduire les animations »).
+// Touches ← → : changer de variant. URL : ?v=clocks|stars|bubbles|hearts|tags|coins|followers, ?debug, ?bare, ?motion (ignore « réduire les animations »).
 
 (() => {
-  const NAMES = { clocks: "Horloges", stars: "Étoiles", bubbles: "Bulles", hearts: "Cœurs" };
+  const NAMES = { clocks: "Horloges", stars: "Étoiles", bubbles: "Bulles", hearts: "Cœurs", tags: "Étiquettes", coins: "Pièces", followers: "Abonnés" };
   const params = new URLSearchParams(location.search);
   const app = document.getElementById("app");
   const bar = document.getElementById("bar");
@@ -43,7 +43,7 @@
 
   // Horloges : les aiguilles tournent dans le sens horaire, à une vitesse propre à chaque horloge ;
   // l'aiguille des heures avance 12 fois moins vite que celle des minutes (logique d'une vraie horloge).
-  const MINUTE_DEG_PER_S = [22, 34, 14]; // horloge 1 (bleue), 2 (pêche), 3 (orange, grande)
+  const MINUTE_DEG_PER_S = [22, 14, 34]; // ordre Figma : horloge bleue, orange (grande), pêche
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches && !params.has("motion");
   const hands = [...document.querySelectorAll('[data-variant="clocks"] .shape')].flatMap((shape, i) =>
     [...shape.querySelectorAll("[data-hand]")].map((el) => ({

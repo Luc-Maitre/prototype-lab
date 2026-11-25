@@ -1,0 +1,35 @@
+/* Abonnés : Data simple (styles .roll dans data.css) puis 11 bulles d'avatar, sur le fond « bulles ».
+   Template Figma « Wrap-up » (6784:14492) : Content en colonne, padding 112 / 24, gap 60 ; textes 20 / 110 / 28 px. */
+
+.ab-content {
+  left: 0; top: 0;
+  width: 375px;
+  padding: 112px 24px 0;
+  display: flex; flex-direction: column; gap: 60px;
+}
+.abonnes .data-simple { position: relative; left: auto; top: auto; width: 100%; translate: none; }
+.abonnes .ds-top { font-size: 20px; }
+.abonnes .ds-value { font-size: 110px; letter-spacing: -5.5px; }
+.abonnes .ds-bottom { font-size: 28px; }
+/* Chiffres de 110 px dans une ligne de 108 : masque des roues plus serré que celui de data.css */
+.abonnes .roll {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--pad) + 10px),
+    #000 calc(var(--pad) + 98px), transparent calc(var(--pad) * 2 + 108px));
+  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--pad) + 10px),
+    #000 calc(var(--pad) + 98px), transparent calc(var(--pad) * 2 + 108px));
+}
+
+/* ---------- Bulles d'avatar (positions posées en JS, toujours 11) ---------- */
+
+.followers { position: relative; width: 100%; height: 132px; flex: none; }
+.fl-b { position: absolute; width: 72px; height: 72px; }
+.fl-in { position: absolute; inset: 0; transform-origin: 50% 50%; will-change: transform; }
+.fl-in > img { position: absolute; }
+.fl-in > .fl-avatar { left: 0; top: 0; }
+.fl-in > .fl-user { left: 20px; top: 20px; }
+.fl-in > .fl-user.is-tall { top: 19.5px; }
+
+/* Avant le départ : bulles masquées (l'animation pose son propre état de départ) */
+.followers.is-waiting .fl-in { opacity: 0; }
+
+.lab-bar select { width: 100%; }

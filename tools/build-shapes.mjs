@@ -1,5 +1,5 @@
 // Construit js/shapes.js depuis les SVG exportés de Figma (assets/backgrounds/*.svg), composant _Background
-// : variants Clocks, Stars, Message bubbles, Hearts. Chaque variant = 3 formes indépendantes
+// : variants Clocks, Stars, Message bubbles, Hearts, Tags, Coins, Followers. Chaque variant = 3 formes indépendantes
 // (bleu, orange, pêche) pour la physique. Repère : écran 375 × 812, formes ancrées en bas.
 // Géométrie reprise du code Figma (positions « bottom » converties en y depuis le haut).
 //
@@ -27,13 +27,16 @@ const wrap = (x, y, w, h, body) =>
 // Forme tournée : fichier de taille (W × H) tourné de `rot`° autour du centre de son cadre (wx, wy, ww, wh).
 function rotated(variant, i, file, [wx, wy, ww, wh], rot, W, Hh) {
   const src = read(file);
-  const role = ROLE[src.match(/<path id="Vector"[^>]*fill="([^"]+)"/)[1].toUpperCase()];
+  const role = roleOf(src);
   const cx = wx + ww / 2, cy = wy + wh / 2;
   const x = wx - PAD, y = wy - PAD, w = ww + 2 * PAD, h = wh + 2 * PAD;
   const g0 = inner(src, `${variant}${i}`);
   const g = `<g transform="translate(${round(cx)} ${round(cy)}) rotate(${rot}) translate(${-W / 2} ${-Hh / 2})">${hands(g0, src)}</g>`;
   return { body: role, mode: "roll", x: round(x), y: round(y), w: round(w), h: round(h), cx: round(cx), cy: round(cy), r: round(Math.sqrt(W * Hh) / 2), svg: wrap(x, y, w, h, g) };
 }
+
+// Couleur de la forme : premier remplissage bleu / orange / pêche du fichier.
+const roleOf = (src) => [...src.matchAll(/fill="(#[0-9A-Fa-f]{6})"/g)].map((m) => ROLE[m[1].toUpperCase()]).find(Boolean);
 
 // Horloges : les aiguilles sont enveloppées dans <g data-hand="hours|minutes" data-px data-py> (pivot = centre
 // du bout arrondi de l'aiguille des heures) ; js/shapes-page.js les fait tourner.
@@ -84,11 +87,41 @@ function paths(variant, file, ox, oy) {
   });
 }
 
+// Aire signée et centroïde du premier sous-tracé (contour extérieur, sans les trous).
+function outline(d) {
+  const verts = points(d.split("Z")[0]).filter((p) => p[2]);
+  let a = 0, gx = 0, gy = 0;
+  for (let k = 0; k < verts.length; k++) {
+    const [x0, y0] = verts[k], [x1, y1] = verts[(k + 1) % verts.length];
+    const f = x0 * y1 - x1 * y0;
+    a += f; gx += (x0 + x1) * f; gy += (y0 + y1) * f;
+  }
+  return { a: Math.abs(a / 2), gx: gx / (3 * a), gy: gy / (3 * a) };
+}
+
+// Fichier dont chaque enfant de _Background (tracé seul ou groupe : étiquette + traits, tête + buste)
+// est une forme, posé en (ox, oy). Rayon et centre de roulement : tracés colorés (pas les détails blancs).
+function groups(variant, file, ox, oy) {
+  const src = read(file).replace(/^[\s\S]*?<g id="_Background">/, "").replace(/<\/g>\s*<\/svg>\s*$/, "");
+  return [...src.matchAll(/<path[^>]*\/>|<g[^>]*>[\s\S]*?<\/g>/g)].map(([el]) => {
+    const ps = [...el.matchAll(/<path[^>]*\sd="([^"]+)"[^>]*fill="([^"]+)"/g)].map((m) => ({ d: m[1], role: ROLE[m[2].toUpperCase()] }));
+    const xs = [], ys = [];
+    for (const p of ps) for (const [x, y] of points(p.d)) { xs.push(x); ys.push(y); }
+    let A = 0, GX = 0, GY = 0;
+    for (const p of ps.filter((p) => p.role)) { const o = outline(p.d); A += o.a; GX += o.gx * o.a; GY += o.gy * o.a; }
+    const minX = Math.min(...xs), minY = Math.min(...ys), maxX = Math.max(...xs), maxY = Math.max(...ys);
+    const x = ox + minX - PAD, y = oy + minY - PAD, w = maxX - minX + 2 * PAD, h = maxY - minY + 2 * PAD;
+    const body = `<g transform="translate(${round(ox)} ${round(oy)})">${el.replace(/ id="[^"]*"/g, "")}</g>`;
+    return { body: ps.find((p) => p.role).role, mode: "roll", x: round(x), y: round(y), w: round(w), h: round(h),
+      cx: round(ox + GX / A), cy: round(oy + GY / A), r: round(Math.sqrt(A / Math.PI)), svg: wrap(x, y, w, h, body) };
+  });
+}
+
 const out = {
   clocks: [
     rotated("clocks", 0, "clock-1", [135.165, H - 200 + 32.66, 200, 200], 0, 200, 200),
-    rotated("clocks", 1, "clock-2", [180.98, H - 235.416 + 159, 235.416, 235.416], 3, 224, 224),
     rotated("clocks", 2, "clock-3", [-112, H - 381.843 + 213.92, 381.843, 381.843], -20, 297.916, 297.916),
+    rotated("clocks", 1, "clock-2", [180.98, H - 235.416 + 159, 235.416, 235.416], 3, 224, 224),
   ],
   stars: paths("stars", "stars", -0.2273 * 375, H - 295),
   bubbles: [
@@ -97,6 +130,13 @@ const out = {
     rotated("bubbles", 2, "bubble-3", [103.46, H - 315.988 + 137.33, 315.71, 315.988], 34.23, 226.817, 227.867),
   ],
   hearts: paths("hearts", "hearts", -0.2349 * 375, H - 273),
+  tags: groups("tags", "tags", -0.0854 * 375, H - 273),
+  coins: [
+    rotated("coins", 0, "coin-1", [166.48, H - 182.055 - 5.14, 182.055, 182.055], 1.57, 177.26, 177.26),
+    rotated("coins", 1, "coin-2", [-45.17, H - 295.009 + 134.65, 295.009, 295.009], -15, 240.874, 240.874),
+    rotated("coins", 2, "coin-3", [151.83, H - 280.126 + 154.88, 280.126, 280.126], 16.99, 224.354, 224.354),
+  ],
+  followers: groups("followers", "followers", -0.0997 * 375, H - 273),
 };
 
 writeFileSync(join(root, "js/shapes.js"),
